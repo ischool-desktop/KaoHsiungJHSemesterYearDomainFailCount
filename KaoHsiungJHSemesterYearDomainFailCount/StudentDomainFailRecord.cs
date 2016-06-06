@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 namespace KaoHsiungJHSemesterYearDomainFailCount
 {
     // 摘要: 
-    //     學年領域成績不及格者成績資訊欄位
+    //     學年領域成績不及格者成績資訊欄位 (穎驊自訂)
     public class StudentDomainFailRecord
     {
         public StudentDomainFailRecord() { 
         }
-
-       
-
+      
         ///<summary>年級</summary>
         public int? Grade { get; set; }
         

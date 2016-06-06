@@ -23,11 +23,13 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
     public partial class Mention_To_Start : BaseForm
     {
-        private List<string> StudentIDs;
 
+        private List<string> StudentIDs;
         int? _schoolYear;
         int? _semester;
-
+        List<K12.Data.StudentRecord> StudentList;
+        List<String> DomainList = new List<string>();
+        BackgroundWorker _BW;
 
 
         //decimal DomainScore1 = 0;
@@ -62,33 +64,27 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
         // 全學年 語文領域成績不及格人數
         int Language_DomainScore_FailedCount = 0;
 
-
+        // 上學期資料
         Dictionary<String, JHSemesterScoreRecord> JSR_Arrange1 = new Dictionary<string, JHSemesterScoreRecord>();
 
+        //下學期資料
         Dictionary<String, JHSemesterScoreRecord> JSR_Arrange2 = new Dictionary<string, JHSemesterScoreRecord>();
 
+        // 計算一年級領域不及格者Dictionary
         Dictionary<String, int> TotalDomainFailCountBook_Grade1 = new Dictionary<string, int>();
 
+        // 計算二年級領域不及格者Dictionary
         Dictionary<String, int> TotalDomainFailCountBook_Grade2 = new Dictionary<string, int>();
 
+        // 計算三年級領域不及格者Dictionary
         Dictionary<String, int> TotalDomainFailCountBook_Grade3 = new Dictionary<string, int>();
 
+        //計算各年級的人數
         Dictionary<String, int> EachGradeStudentCount = new Dictionary<string, int>();
 
+        //紀錄領域不及格者之詳情，作為報表輸出的詳情使用
         Dictionary<String, StudentDomainFailRecord> StudentFailedDomainRecordList = new Dictionary<string, StudentDomainFailRecord>();
-
-        List<K12.Data.StudentRecord> StudentList;
-
-        List<String> DomainList = new List<string>();
-
-
-        BackgroundWorker _BW;
-
-
-
-
-
-
+    
         public Mention_To_Start()
         {
             InitializeComponent();
@@ -109,8 +105,10 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
             StudentIDs = gyStudent;
 
+            // 取得該學校當學年
             _schoolYear = Int32.Parse(K12.Data.School.DefaultSchoolYear);
 
+            //取得該學校當學期 (本程式目前未用到)
             _semester = Int32.Parse(K12.Data.School.DefaultSemester);
 
             StudentList = K12.Data.Student.SelectByIDs(StudentIDs);
@@ -129,9 +127,10 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             DomainList.Add("綜合活動");
 
 
-            //加入 所有的領域名稱，作為分開各年級數各領域不及格人數用
-            TotalDomainFailCountBook_Grade1.Add("國語文", Chinese_DomainScore_FailedCount);
-            TotalDomainFailCountBook_Grade1.Add("英語", English_DomainScore_FailedCount);
+            //加入 所有的領域名稱，作為分開各年級數各領域不及格人數用，目前報表輸出，已將國語文、英語合併為"語文"一領域，故註解掉
+
+            //TotalDomainFailCountBook_Grade1.Add("國語文", Chinese_DomainScore_FailedCount);
+            //TotalDomainFailCountBook_Grade1.Add("英語", English_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade1.Add("數學", Math_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade1.Add("社會", Social_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade1.Add("自然與生活科技", Nature_Tech_DomainScore_FailedCount);
@@ -140,8 +139,8 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             TotalDomainFailCountBook_Grade1.Add("綜合活動", Integrated_Activities_Domain_FailedCount);
             TotalDomainFailCountBook_Grade1.Add("語文", Language_DomainScore_FailedCount);
 
-            TotalDomainFailCountBook_Grade2.Add("國語文", Chinese_DomainScore_FailedCount);
-            TotalDomainFailCountBook_Grade2.Add("英語", English_DomainScore_FailedCount);
+            //TotalDomainFailCountBook_Grade2.Add("國語文", Chinese_DomainScore_FailedCount);
+            //TotalDomainFailCountBook_Grade2.Add("英語", English_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade2.Add("數學", Math_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade2.Add("社會", Social_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade2.Add("自然與生活科技", Nature_Tech_DomainScore_FailedCount);
@@ -150,8 +149,8 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             TotalDomainFailCountBook_Grade2.Add("綜合活動", Integrated_Activities_Domain_FailedCount);
             TotalDomainFailCountBook_Grade2.Add("語文", Language_DomainScore_FailedCount);
 
-            TotalDomainFailCountBook_Grade3.Add("國語文", Chinese_DomainScore_FailedCount);
-            TotalDomainFailCountBook_Grade3.Add("英語", English_DomainScore_FailedCount);
+            //TotalDomainFailCountBook_Grade3.Add("國語文", Chinese_DomainScore_FailedCount);
+            //TotalDomainFailCountBook_Grade3.Add("英語", English_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade3.Add("數學", Math_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade3.Add("社會", Social_DomainScore_FailedCount);
             TotalDomainFailCountBook_Grade3.Add("自然與生活科技", Nature_Tech_DomainScore_FailedCount);
@@ -165,18 +164,11 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             EachGradeStudentCount.Add("Grade2", Grade2StudentNumber);
             EachGradeStudentCount.Add("Grade3", Grade3StudentNumber);
 
-
-
-
-
-
         }
 
         private void _BW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             FISCA.Presentation.MotherForm.SetStatusBarMessage("報表列印完成");
-
-
             Workbook wb = e.Result as Workbook;
 
             if (wb == null)
@@ -215,9 +207,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             //wb.Worksheets.AddCopy(0);
 
             wb.Worksheets[0].Name = "全校全年級各領域不及格人數統計表";
-
-            wb.Worksheets[1].Name = "統計表詳細";
-
+            wb.Worksheets[1].Name = "學年領域不及格學生明細";
             Cells cs0 = wb.Worksheets[0].Cells;
 
 
@@ -251,6 +241,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
             Cells cs1 = wb.Worksheets[1].Cells;
 
+            //領域不及格者計數器
             int FailStudentCounter = 0;
 
             foreach (String FailedStudent in StudentFailedDomainRecordList.Keys)
@@ -288,16 +279,16 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
         {
 
 
-            // 處理學生的每一筆成績
+            // 處理學生的每一筆成績，處理好後，分上下學期，使用特定的KEY值，分別加入上下學期成績的Dictionary。
             foreach (JHSemesterScoreRecord jsr in JHSchool.Data.JHSemesterScore.SelectByStudentIDs(StudentIDs))
             {
-
+                // 該比學期成績資料，學年必須等於當下學期，且學生的目前狀態是一般生(Status == 0)
                 if (jsr.SchoolYear == _schoolYear && jsr.Student.Status == 0)
                 {
 
                     if (jsr.Semester == 1)
-                    {
-
+                    {   
+                        //  使用學生ID+ 底線 _ + 學年 可以保證這KEY 獨一無二，(記得底線_要加，否則電腦分不清99 還是9+9)
                         String Sem1Key1 = jsr.RefStudentID + "_" + jsr.SchoolYear + "1";
 
                         JSR_Arrange1.Add(Sem1Key1, jsr);
@@ -316,6 +307,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
             }
 
+            // 處理目前所有學生，假如狀態是一般生，且有班級，取得KEY值，進一步去做領域計算
             foreach (StudentRecord sr in StudentList)
             {
 
@@ -326,16 +318,16 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
                     String Sem2Key2 = sr.ID + "_" + _schoolYear + "2";
 
-
+                    //使用DomainList去查出每一筆成績
                     foreach (String DomainName in DomainList)
                     {
 
-
                         if (JSR_Arrange1.ContainsKey(Sem1Key1) && JSR_Arrange2.ContainsKey(Sem2Key2))
                         {
-
+                            // 使用EachJSRCalculator方法，傳入上下學期成績資料、領域名稱，判斷該學年該學生該領域成績有沒有及格
                             bool pass = EachJSRCalculator(JSR_Arrange1[Sem1Key1], JSR_Arrange2[Sem2Key2], DomainName);
 
+                            //不及格就進行數數
                             if (!pass && sr.Class.GradeYear == 1)
                             {
 
@@ -362,7 +354,6 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
                 //用來數各年級的學生數量
                 if (sr.Class != null)
                 {
-
                     if (sr.Class.GradeYear == 1 || sr.Class.GradeYear == 7)
                     {
                         EachGradeStudentCount["Grade1"]++;
@@ -389,6 +380,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             JHSemesterScoreRecord jsr1 = JSR;
             JHSemesterScoreRecord jsr2 = JSR2;
 
+            // 領域總分，領域總加權數
             decimal scoreSum = 0, creditCount = 0;
 
             if (jsr1.Domains.ContainsKey(DomainName))
@@ -417,6 +409,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
                 String FailedDomainBookKey = jsr1.Student.ID + "_" + jsr1.SchoolYear + "_" + DomainName;
 
+                // 此物件用來記錄該學生該領域不及格詳情(穎驊在本程式自訂)
                 StudentDomainFailRecord SDFR = new StudentDomainFailRecord();
 
                 SDFR.Grade = jsr1.Student.Class.GradeYear;
@@ -432,19 +425,18 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
                 }
                 else
                 {
+                    // 恩正說，備註暫時先不要用
                     //SDFR._memo = "學生在此項目的學期領域成績、權數資料不全，將導致系統計算錯誤，請至系統檢查核對";
                 }
 
-
-
                 if (jsr2.Domains.ContainsKey(DomainName))
                 {
-
                     SDFR._second_domain_score = jsr2.Domains[DomainName].Score;
                     SDFR._second_domain_credit = jsr2.Domains[DomainName].Credit;
                 }
                 else
                 {
+                    // 恩正說，備註暫時先不要用
                     //SDFR._memo = "學生在此項目的學期領域成績、權數資料不全，將導致系統計算錯誤，請至系統檢查核對";
                 }
 
@@ -465,12 +457,9 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
 
         public void RunWork()
         {
-
-
             _BW.DoWork += new DoWorkEventHandler(_BW_DoWork);
             _BW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(_BW_RunWorkerCompleted);
             _BW.RunWorkerAsync();
-
 
         }
 
@@ -479,10 +468,7 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
         private void btn_Exit_Click(object sender, EventArgs e)
         {
             this.Close();
-
-
         }
-
 
         // 點選"開始計算" 後開始進行運算
         private void btn_StartCalculate_Click(object sender, EventArgs e)
@@ -495,13 +481,10 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
             else
             {
                 RunWork();
+                // 要記得在功能Run完後Close()，否則使用者若是再按下殘留在主畫面的計算按鈕，會造成重覆使用一樣沒清乾淨的變數，造成當機跳出
+                this.Close();
             }
-
-
         }
-
-
-
 
     }
 }

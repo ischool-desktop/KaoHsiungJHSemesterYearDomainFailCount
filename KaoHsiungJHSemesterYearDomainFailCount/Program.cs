@@ -20,16 +20,13 @@ namespace KaoHsiungJHSemesterYearDomainFailCount
         {
 
 
+            // 將本功能按鈕放上、註冊給ischool
             MenuButton item = JHSchool.Affair.EduAdmin.Instance.RibbonBarItems["批次作業/檢視"]["成績作業"];
             item["全年級學年領域統計不及格人數報表"].Enable = Permissions.年級學年領域統計不及格人數報表權限;
             item["全年級學年領域統計不及格人數報表"].Click += delegate
             {
-
-                
                 Mention_To_Start MTS = new Mention_To_Start();
-
-                MTS.ShowDialog();
-                
+                MTS.ShowDialog();                
             };
             Catalog detail1 = RoleAclSource.Instance["教務作業"];
             detail1.Add(new RibbonFeature(Permissions.全年級學年領域統計不及格人數報表, "全年級學年領域統計不及格人數報表"));
