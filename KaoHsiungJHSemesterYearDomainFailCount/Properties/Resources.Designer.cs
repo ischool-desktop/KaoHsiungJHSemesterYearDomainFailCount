@@ -63,9 +63,9 @@ namespace KaoHsiungJHSemesterYearDomainFailCount.Properties {
         /// <summary>
         ///   查詢類型 System.Byte[] 的當地語系化資源。
         /// </summary>
-        internal static byte[] 計算全校學期領域不及格人數 {
+        internal static byte[] 計算全校學年領域不及格人數 {
             get {
-                object obj = ResourceManager.GetObject("計算全校學期領域不及格人數", resourceCulture);
+                object obj = ResourceManager.GetObject("計算全校學年領域不及格人數", resourceCulture);
                 return ((byte[])(obj));
             }
         }
