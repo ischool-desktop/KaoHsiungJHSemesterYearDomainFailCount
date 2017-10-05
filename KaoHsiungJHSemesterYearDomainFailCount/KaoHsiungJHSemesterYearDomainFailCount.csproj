@@ -32,13 +32,16 @@
   <ItemGroup>
     <Reference Include="Aspose.Cells_201402">
       <HintPath>Library\Aspose.Cells_201402.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Aspose.Words_201402">
       <HintPath>Library\Aspose.Words_201402.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevComponents.DotNetBar2, Version=9.5.0.1, Culture=neutral, PublicKeyToken=7eb7c3a35b91de04, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\JHEvaluation\JHEvaluationExtensions\JHEvaluation.ScoreCalculation\JHEvaluation.ScoreCalculation\Library\DevComponents.DotNetBar2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FISCA, Version=2.5.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,6 +109,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SemesterSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SemesterSettingForm.Designer.cs">
+      <DependentUpon>SemesterSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlString.cs" />
     <Compile Include="StudentDomainFailRecord.cs" />
     <Compile Include="Mention_To_Start.cs">
       <SubType>Form</SubType>
@@ -167,6 +177,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SemesterSettingForm.resx">
+      <DependentUpon>SemesterSettingForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
