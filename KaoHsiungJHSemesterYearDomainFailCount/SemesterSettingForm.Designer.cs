@@ -73,7 +73,7 @@
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(134, 23);
             this.labelX1.TabIndex = 2;
-            this.labelX1.Text = "請選擇所欲統計學期";
+            this.labelX1.Text = "請選擇所欲統計學年";
             // 
             // comboBoxEx1
             // 
@@ -102,7 +102,7 @@
             this.MaximumSize = new System.Drawing.Size(296, 123);
             this.MinimumSize = new System.Drawing.Size(296, 123);
             this.Name = "SemesterSettingForm";
-            this.Text = "學期設定";
+            this.Text = "學年設定";
             this.Load += new System.EventHandler(this.SemesterSettingForm_Load);
             this.ResumeLayout(false);
 
